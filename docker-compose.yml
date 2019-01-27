@@ -1,0 +1,80 @@
+version: "3"
+services:
+  app:
+    image: webdevops/php-nginx-dev:7.2
+    container_name: lemp.dev
+    networks:
+      - proxy
+    volumes:
+      - .:/app
+      - ./docker_config/php.ini:/opt/docker/etc/php/php.ini
+    environment:
+      - PHP_DEBUGGER=xdebug
+      - PHP_DISPLAY_ERRORS=1
+      - PHP_DATE_TIMEZONE=Asia/Ho_Chi_Minh
+      - WEB_DOCUMENT_ROOT=/app/public
+    labels:
+      - traefik.enable=true
+      - traefik.backend=oversea_hr
+      - traefik.frontend.rule=Host:dev.yourdomain.com
+      - traefik.docker.network=proxy
+      - traefik.port=80
+  nodejs:
+    image: node:8
+    container_name: nodejs.dev
+    stdin_open: true
+    networks:
+      - proxy
+    volumes:
+      - .:/app
+  db:
+    image: mysql:5.7.24
+    container_name: database.dev
+    networks:
+      - proxy
+    command: mysqld --user=root --verbose
+    volumes:
+      - ./docker_config/your_mysql_script.sql:/tmp/your_mysql_script.sql
+      - ./docker_config/import.sh:/tmp/import.sh
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: "your_database_name"
+      MYSQL_USER: "kevin"
+      MYSQL_PASSWORD: "root"
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+  phpmyadmin:
+      image: phpmyadmin/phpmyadmin
+      container_name: phpmyadmin.dev
+      environment:
+        - PMA_ARBITRARY=1
+      restart: always
+      links:
+        - "db: db"
+      ports:
+        - 9090:80
+      environment:
+        MYSQL_USERNAME: root
+        MYSQL_ROOT_PASSWORD: root
+        PMA_HOST: db
+      networks:
+        - proxy
+  traefik:
+    image: traefik
+    container_name: traefik
+    command:
+      - --api
+      - --docker
+      - --docker.exposedbydefault=false
+    restart: always
+    ports:
+      - 80:80
+      - 8080:8080
+    networks:
+      - proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+networks:
+  proxy:
+    external: true
