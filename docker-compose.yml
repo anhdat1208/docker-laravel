@@ -34,12 +34,12 @@ services:
       - proxy
     command: mysqld --user=root --verbose
     volumes:
-      - ./docker_config/your_mysql_script.sql:/tmp/your_mysql_script.sql
+      - ./docker_config/script.sql:/tmp/script.sql
       - ./docker_config/import.sh:/tmp/import.sh
     ports:
       - "3306:3306"
     environment:
-      MYSQL_DATABASE: "your_database_name"
+      MYSQL_DATABASE: "databasename"
       MYSQL_USER: "kevin"
       MYSQL_PASSWORD: "root"
       MYSQL_ROOT_PASSWORD: "root"
