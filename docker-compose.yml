@@ -2,9 +2,9 @@ version: "3"
 services:
   app:
     image: webdevops/php-nginx-dev:7.2
-    container_name: lemp.dev
+    container_name: [named your container]
     networks:
-      - proxy
+      - [put your docker's network name]
     volumes:
       - .:/app
       - ./docker_config/php.ini:/opt/docker/etc/php/php.ini
@@ -15,23 +15,23 @@ services:
       - WEB_DOCUMENT_ROOT=/app/public
     labels:
       - traefik.enable=true
-      - traefik.backend=oversea_hr
-      - traefik.frontend.rule=Host:dev.yourdomain.com
-      - traefik.docker.network=proxy
+      - traefik.backend=[named backed name]
+      - traefik.frontend.rule=Host:[put your domain name]
+      - traefik.docker.network=[put your docker's network name]
       - traefik.port=80
   nodejs:
     image: node:8
-    container_name: nodejs.dev
+    container_name: [named your container]
     stdin_open: true
     networks:
-      - proxy
+      - [put your docker's network name]
     volumes:
       - .:/app
   db:
     image: mysql:5.7.24
-    container_name: database.dev
+    container_name: [named your container]
     networks:
-      - proxy
+      - [put your docker's network name]
     command: mysqld --user=root --verbose
     volumes:
       - ./docker_config/script.sql:/tmp/script.sql
@@ -40,13 +40,13 @@ services:
       - "3306:3306"
     environment:
       MYSQL_DATABASE: "databasename"
-      MYSQL_USER: "kevin"
-      MYSQL_PASSWORD: "root"
+      MYSQL_USER: [whatever you want]
+      MYSQL_PASSWORD: "secret"
       MYSQL_ROOT_PASSWORD: "root"
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
   phpmyadmin:
       image: phpmyadmin/phpmyadmin
-      container_name: phpmyadmin.dev
+      container_name: [named your container]
       environment:
         - PMA_ARBITRARY=1
       restart: always
@@ -62,7 +62,7 @@ services:
         - proxy
   traefik:
     image: traefik
-    container_name: traefik
+    container_name: [named your container]
     command:
       - --api
       - --docker
@@ -72,7 +72,7 @@ services:
       - 80:80
       - 8080:8080
     networks:
-      - proxy
+      - [put your docker's network name]
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 networks:
