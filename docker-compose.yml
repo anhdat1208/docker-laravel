@@ -59,7 +59,7 @@ services:
         MYSQL_ROOT_PASSWORD: root
         PMA_HOST: db
       networks:
-        - proxy
+        - [put your docker's network name]
   traefik:
     image: traefik
     container_name: [named your container]
@@ -76,5 +76,5 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 networks:
-  proxy:
+  [put your docker's network name]:
     external: true
