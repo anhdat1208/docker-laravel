@@ -1,7 +1,7 @@
 version: "3"
 services:
   app:
-    image: webdevops/php-nginx-dev:7.2
+    image: webdevops/php-nginx-dev
     container_name: [named your container]
     networks:
       - [put your docker's network name]
@@ -20,7 +20,7 @@ services:
       - traefik.docker.network=[put your docker's network name]
       - traefik.port=80
   nodejs:
-    image: node:8
+    image: node
     container_name: [named your container]
     stdin_open: true
     networks:
@@ -28,7 +28,7 @@ services:
     volumes:
       - .:/app
   db:
-    image: mysql:5.7.24
+    image: mysql
     container_name: [named your container]
     networks:
       - [put your docker's network name]
